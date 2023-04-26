@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Бүртгэл</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+    <style>
+      * {
+      box-sizing: border-box;
+      }
+      html, body {
+      min-height: 100vh;
+      padding: 0;
+      margin: 0;
+      font-family: Roboto, Arial, sans-serif;
+      font-size: 14px; 
+      color: #666;
+      }
+      input, textarea { 
+      outline: none;
+      }
+      body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background: #5a7233;
+      }
+      h1 {
+      margin-top: 0;
+      font-weight: 500;
+      }
+      form {
+      position: relative;
+      width: 80%;
+      border-radius: 30px;
+      background: #fff;
+      }
+      .form-left-decoration,
+      .form-right-decoration {
+      content: "";
+      position: absolute;
+      width: 50px;
+      height: 20px;
+      border-radius: 20px;
+      background: #5a7233;
+      }
+      .form-left-decoration {
+      bottom: 60px;
+      left: -30px;
+      }
+      .form-right-decoration {
+      top: 60px;
+      right: -30px;
+      }
+      .form-left-decoration:before,
+      .form-left-decoration:after,
+      .form-right-decoration:before,
+      .form-right-decoration:after {
+      content: "";
+      position: absolute;
+      width: 50px;
+      height: 20px;
+      border-radius: 30px;
+      background: #fff;
+      }
+      .form-left-decoration:before {
+      top: -20px;
+      }
+      .form-left-decoration:after {
+      top: 20px;
+      left: 10px;
+      }
+      .form-right-decoration:before {
+      top: -20px;
+      right: 0;
+      }
+      .form-right-decoration:after {
+      top: 20px;
+      right: 10px;
+      }
+      .circle {
+      position: absolute;
+      bottom: 80px;
+      left: -55px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #fff;
+      }
+      .form-inner {
+      padding: 40px;
+      }
+      .form-inner input,
+      .form-inner textarea {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin-bottom: 10px;
+      border: none;
+      border-radius: 20px;
+      background: #d0dfe8;
+      }
+      .form-inner textarea {
+      resize: none;
+      }
+      button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 20px;
+      border-radius: 20px;
+      border: none;
+      border-bottom: 4px solid #3e4f24;
+      background: #5a7233; 
+      font-size: 16px;
+      font-weight: 400;
+      color: #fff;
+      }
+      button:hover {
+      background: #3e4f24;
+      } 
+      @media (min-width: 568px) {
+      form {
+      width: 60%;
+      }
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <form action="javascript:;" class="decor" id="decor" autocomplete="off">
+      <div class="form-left-decoration"></div>
+      <div class="form-right-decoration"></div>
+      <div class="circle"></div>
+      <div class="form-inner">
+        <!-- <h1>Contact us</h1> -->
+        <input type="text" required placeholder="Овог" autocomplete="off" id="lastname">
+        <input type="text" required placeholder="Нэр" autocomplete="off" id="firstname">
+        <input type="text" pattern="[0-9]{8}" autocomplete="off" maxlength="8" id="phone" required placeholder="Утасны дугаар">
+        <!-- <textarea placeholder="Message..." rows="5"></textarea> -->
+        <button type="submit" id="submit">Хадгалах</button>
+      </div>
+    </form>
+
+
+    <script>
+      const handler = {
+        sumbit: function() {
+          const lastname = document.querySelector('#lastname');
+          const firstname = document.querySelector('#firstname');
+          const phone = document.querySelector('#phone');
+          const button = document.querySelector('#submit');
+          button.disabled = true;
+          axios({
+            method: 'post',
+            url: 'https://api.cms.tumentechno.mn/api/user/sample-form',
+            data: {
+              lastname: lastname.value,
+              firstname: firstname.value,
+              phone: phone.value
+            }
+          }).then(data => {
+            button.disabled = false;
+
+            if (data.data.result === 'duplicated') {
+              alert('Утасны дугаар аль хэдийн бүртгэгдсэн байна.');
+              return;
+            }
+
+            alert('Амжилттай бүртгэгдлээ.');
+            lastname.value = '';
+            firstname.value = '';
+            phone.value = '';
+          });
+        }
+      }
+
+      const bind = () => {
+        var form = document.getElementById('decor');
+        if (form.attachEvent) {
+            form.attachEvent("submit", handler.sumbit);
+        } else {
+            form.addEventListener("submit", handler.sumbit);
+        }
+      }
+
+      bind();
+    </script>
+  </body>
+</html>
